@@ -1,10 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3002;
-
 
 app.use(cors());
 app.use(express.json());
@@ -53,7 +53,10 @@ app.get("/api/jewellery", async (req, res) => {
     const products = await Jewellery.find();
     res.json(products);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching products", error: error.message });
+    res.status(500).json({
+      message: "Error fetching products",
+      error: error.message
+    });
   }
 });
 
@@ -62,10 +65,16 @@ app.post("/api/orders", async (req, res) => {
     const { customer, items, total } = req.body;
 
     if (!customer || !items || !items.length || !total) {
-      return res.status(400).json({ message: "Complete order details are required." });
+      return res.status(400).json({
+        message: "Complete order details are required."
+      });
     }
 
-    const order = await Order.create({ customer, items, total });
+    const order = await Order.create({
+      customer,
+      items,
+      total
+    });
 
     res.status(201).json({
       message: "Order placed successfully",
@@ -84,16 +93,19 @@ app.get("/api/orders", async (req, res) => {
     const orders = await Order.find().sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching orders", error: error.message });
+    res.status(500).json({
+      message: "Error fetching orders",
+      error: error.message
+    });
   }
 });
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/snehasakhiDB")
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("MongoDB connected successfully.");
     app.listen(PORT, () => {
-      console.log(`Snehasakhi backend running at http://localhost:${PORT}`);
+      console.log(`Snehasakhi backend running on port ${PORT}`);
     });
   })
   .catch((error) => {
