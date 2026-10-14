@@ -224,8 +224,8 @@ const clientBuildPath = path.join(__dirname, "../client/dist");
 app.use(express.static(clientBuildPath));
 
 /* Catch-all: send React's index.html for any non-API route */
-app.get("*", (req, res, next) => {
-  if (req.path.startsWith("/api")) return next();
+/* Note: using app.use() — Express 5 dropped bare * wildcard support */
+app.use((req, res) => {
   res.sendFile(path.join(clientBuildPath, "index.html"));
 });
 
