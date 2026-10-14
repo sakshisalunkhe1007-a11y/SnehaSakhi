@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -214,6 +215,18 @@ app.get("/api/orders", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error fetching orders", error: error.message });
   }
+});
+
+/* ─────────────────── STATIC FILES (Production) ─────────────────── */
+
+/* Serve React build when running on Render / in production */
+const clientBuildPath = path.join(__dirname, "../client/dist");
+app.use(express.static(clientBuildPath));
+
+/* Catch-all: send React's index.html for any non-API route */
+app.get("*", (req, res, next) => {
+  if (req.path.startsWith("/api")) return next();
+  res.sendFile(path.join(clientBuildPath, "index.html"));
 });
 
 /* ─────────────────── DB CONNECTION ─────────────────── */
