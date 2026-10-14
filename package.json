@@ -1,5 +1,14 @@
 {
-  "dependencies": {
-    "dotenv": "^18.0.5"
+  "name": "snehasakhi-collection",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "cd server && npm install && cd ../client && npm install",
+    "server": "cd server && node server.js",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }
